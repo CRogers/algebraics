@@ -1,3 +1,5 @@
+{-# LANGUAGE PatternSynonyms #-}
+
 module Clean where
 
 import Fix(bottomUp)
@@ -21,20 +23,35 @@ associateRight tf a b c = if cleanedUp == assoc then tf (tf a b) c else cleanedU
 	where assoc = tf a (tf b c)
 	      cleanedUp = cleanUp' assoc
 -}
+
+pattern Neg a = Sub (Num 0) a
+
 cleanUp' :: Expr -> Expr
 cleanUp' (Add (Num 0) b) = b
 cleanUp' (Add a (Num 0)) = a
-cleanUp' (Add (Sym x) (Sym y)) | x == y = Mul (Num 2) (Sym x)
+cleanUp' (Add a b) | a == b = Mul (Num 2) a
+--cleanUp' (Add a (Sub (Num 0) b)) = Add (Sub (Num 0) a) b
 --cleanUp' (Add a (Add b c)) = associateLeft Add a b c
 --cleanUp' (Add (Add a b) c) = associateRight Add a b c
+
+cleanUp' (Sub a (Num 0)) = a
+cleanUp' (Sub a b) | a == b = Num 0
+cleanUp' (Sub a (Neg b)) = Add a b
+cleanUp' (Add (Neg a) b) = Sub b a
 
 cleanUp' (Mul (Num 0) _) = Num 0
 cleanUp' (Mul _ (Num 0)) = Num 0
 cleanUp' (Mul (Num 1) b) = b
 cleanUp' (Mul a (Num 1)) = a
-cleanUp' (Mul (Num a) (Sub (Num 0) b)) = Mul (Num (0 - a)) b
+cleanUp' (Mul a (Neg b)) = Neg (Mul a b)
+cleanUp' (Mul (Neg a) b) = Neg (Mul a b)
 --cleanUp' (Mul a (Mul b c)) = associateLeft Mul a b c
 --cleanUp' (Mul (Mul a b) c) = associateRight Mul a b c
+
+cleanUp' (Div a (Num 1)) = a
+cleanUp' (Div a b) | a == b = Num 1
+cleanUp' (Mul (Div (Num 1) a) b) | a == b = Num 1
+cleanUp' (Mul a (Div (Num 1) b)) | a == b = Num 1
 
 cleanUp' (Pow _ (Num 0)) = Num 1
 cleanUp' (Pow a (Num 1)) = a
