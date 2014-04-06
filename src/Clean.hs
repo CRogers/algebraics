@@ -32,6 +32,7 @@ cleanUp' (Mul (Num 0) _) = Num 0
 cleanUp' (Mul _ (Num 0)) = Num 0
 cleanUp' (Mul (Num 1) b) = b
 cleanUp' (Mul a (Num 1)) = a
+cleanUp' (Mul (Num a) (Sub (Num 0) b)) = Mul (Num (0 - a)) b
 --cleanUp' (Mul a (Mul b c)) = associateLeft Mul a b c
 --cleanUp' (Mul (Mul a b) c) = associateRight Mul a b c
 

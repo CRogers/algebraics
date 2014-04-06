@@ -10,6 +10,8 @@ data Expr a
 	| Div a a
 	| Mul a a
 	| Pow a a
+	| Sin a
+	| Cos a
 	deriving (Show, Eq, Functor)
 
 pretty2 :: String -> String -> String -> String
@@ -23,3 +25,5 @@ pretty (Sub a b) = pretty2 "-" a b
 pretty (Mul a b) = pretty2 "*" a b
 pretty (Div a b) = pretty2 "/" a b
 pretty (Pow a b) = pretty2 "^" a b
+pretty (Sin x) = "sin " ++ x
+pretty (Cos x) = "cos " ++ x 

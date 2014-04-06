@@ -14,6 +14,8 @@ pattern Sub a b = In (RT.Sub a b)
 pattern Mul a b = In (RT.Mul a b)
 pattern Div a b = In (RT.Div a b)
 pattern Pow a b = In (RT.Pow a b)
+pattern Cos x = In (RT.Cos x)
+pattern Sin x = In (RT.Sin x)
 
 pretty :: Expr -> String
 pretty = cata RT.pretty
